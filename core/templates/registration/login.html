@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Reutilizamos el estilo de los inputs para mantener la coherencia */
+    .premium-form label {
+        color: var(--gold-premium);
+        font-weight: bold;
+        margin-bottom: 0.3rem;
+        display: block;
+    }
+
+    .premium-form input {
+        width: 100%;
+        background-color: rgba(20, 20, 20, 0.8);
+        border: 1px solid #444;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .premium-form input:focus {
+        outline: none;
+        border-color: var(--gold-premium);
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        background-color: #000;
+    }
+
+    .glass-card {
+        background: rgba(15, 15, 15, 0.75);
+        /* Fondo muy oscuro y semi-transparente */
+        backdrop-filter: blur(5px);
+        /* Esto hace el efecto de vidrio borroso hacia atrás */
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(212, 175, 55, 0.4);
+        /* Borde dorado sutil */
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    }
+</style>
+
+<div class="d-flex align-items-center justify-content-center border-gold"
+    style="min-height: 75vh; background-image: url('{% static "core/img/trago_bg.png" %}'); background-size: cover;
+    background-position: center; position: relative; border-radius: 15px; overflow: hidden; border: 2px solid
+    var(--gold-premium);">
+
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3);"></div>
+
+    <div class="card glass-card rounded-4 p-5 position-relative z-1" style="width: 100%; max-width: 450px;">
+
+        <div class="text-center mb-4">
+            <div class="display-4 mb-2"></div>
+            <h2 class="fw-bold text-gold display-6">Bienvenido</h2>
+            <p class="text-light opacity-75">Ingresa tus credenciales VIP</p>
+            <hr style="border-color: var(--gold-premium); width: 50%; margin: 1rem auto;">
+        </div>
+
+        <form method="post" class="premium-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit" class="btn bg-gold w-100 fw-bold rounded-pill mt-3 py-2 fs-5 text-dark"
+                style="transition: transform 0.2s;">
+                Entrar a la Cava
+            </button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="text-secondary mb-1">¿Aún no eres miembro del club?</p>
+            <a href="{% url 'registro' %}" class="text-gold fw-bold" style="text-decoration: none;">Solicita tu
+                membresía aquí</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

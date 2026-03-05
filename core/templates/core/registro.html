@@ -1,0 +1,103 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Para volver Premium el formulario automático de Django */
+    .premium-form label {
+        color: var(--gold-premium);
+        font-weight: bold;
+        margin-bottom: 0.3rem;
+        display: block;
+    }
+
+    .premium-form input {
+        width: 100%;
+        background-color: rgba(20, 20, 20, 0.8);
+        /* Fondo oscuro transparente */
+        border: 1px solid #444;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .premium-form input:focus {
+        outline: none;
+        border-color: var(--gold-premium);
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        background-color: #000;
+    }
+
+    /* Estilos para los textos de ayuda de las contraseñas */
+    .premium-form .helptext {
+        font-size: 0.8rem;
+        color: #888;
+        display: block;
+        margin-top: -0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Estilos por si el usuario se equivoca (errores) */
+    .premium-form ul {
+        color: #e74c3c;
+        list-style: none;
+        padding-left: 0;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="container py-5">
+
+    <div class="card card-pro rounded-4 overflow-hidden shadow-lg mx-auto"
+        style="max-width: 1000px; border: 2px solid var(--gold-premium) !important; background-image: url('{% static "core/img/relajao_bg.png" %}'); background-size: cover; background-position: center;">
+        <div class="row g-0" style="min-height: 600px;">
+
+            <div class="col-lg-6 d-none d-lg-block">
+            </div>
+
+            <div class="col-lg-6 position-relative">
+
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+                            background: linear-gradient(to right, transparent 0%, rgba(10,10,10,0.85) 35%, #0a0a0a 100%); 
+                            backdrop-filter: blur(6px); 
+                            -webkit-backdrop-filter: blur(6px);
+                            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 35%); 
+                            mask-image: linear-gradient(to right, transparent 0%, black 35%); 
+                            z-index: 0;">
+                </div>
+
+                <div class="card-body p-5 position-relative" style="z-index: 1;">
+
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-gold display-6">Hazte Socio VIP</h2>
+                        <p class="text-secondary">Únete a la élite y descubre nuestra reserva privada de espíritus.</p>
+                        <hr style="border-color: var(--gold-premium); width: 30%; margin: 1rem auto;">
+                    </div>
+
+                    <form method="post" class="premium-form">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+
+                        <button type="submit" class="btn bg-gold w-100 fw-bold rounded-pill mt-4 py-2 fs-5 text-dark"
+                            style="transition: transform 0.2s;">
+                            Completar Registro
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="text-secondary mb-1">¿Ya perteneces al club?</p>
+                        <a href="{% url 'login' %}" class="text-gold fw-bold" style="text-decoration: none;">Ingresa a
+                            tu cuenta aquí</a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

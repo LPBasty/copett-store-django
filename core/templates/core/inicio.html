@@ -1,0 +1,80 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+    </div>
+
+    <div class="carousel-inner">
+        
+        <div class="carousel-item active" data-bs-interval="5000">
+            <a href="{% url 'inicio' %}" style="text-decoration: none;">
+                <div class="hero-section" style="background-image: url('{% static "core/img/inicio_bg.png" %}');">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content">
+                        <h1 class="display-3 fw-bold text-light mb-3">Copett Store</h1>
+                        <p class="lead text-gold mb-0">Sabores extraordinarios. Tu experiencia comienza aquí abajo.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="carousel-item" data-bs-interval="5000">
+            <a href="{% url 'registro' %}" style="text-decoration: none;">
+                <div class="hero-section" style="background-image: url('{% static "core/img/registratevip_bg.png" %}');">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content border-gold">
+                        <h1 class="display-3 fw-bold text-gold mb-3">Únete al Club VIP</h1>
+                        <p class="lead text-light mb-4">Regístrate para acceder a nuestra exclusiva Cava de Alta Gama.</p>
+                        <span class="btn bg-gold fw-bold rounded-pill px-4 py-2 text-dark">Registrarme Ahora</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div> <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" style="top: 50%; bottom: auto; transform: translateY(-50%); height: auto; z-index: 10; width: 8%;">
+        <span aria-hidden="true" style="font-size: 3.5rem; color: var(--gold-premium); text-shadow: 2px 2px 8px rgba(0,0,0,0.9);">&#10094;</span>
+        <span class="visually-hidden">Anterior</span>
+    </button>
+    
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next" style="top: 50%; bottom: auto; transform: translateY(-50%); height: auto; z-index: 10; width: 8%;">
+        <span aria-hidden="true" style="font-size: 3.5rem; color: var(--gold-premium); text-shadow: 2px 2px 8px rgba(0,0,0,0.9);">&#10095;</span>
+        <span class="visually-hidden">Siguiente</span>
+    </button>
+
+</div> <div class="container py-5">
+    <h2 class="text-center text-gold mb-5 fw-bold">Nuestra Selección Clásica</h2>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for producto in productos %}
+        <div class="col">
+            <div class="card h-100 card-pro rounded-4">
+                <div class="card-body text-center p-4">
+                    
+                    {% if producto.imagen %}
+                        <div class="mb-3" style="height: 250px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" style="max-height: 100%; object-fit: contain;">
+                        </div>
+                    {% else %}
+                        <div class="display-1 mb-3">{{ producto.icono }}</div>
+                    {% endif %}
+                    
+                    <h5 class="card-title fw-bold text-light">{{ producto.nombre }}</h5>
+                    <hr style="border-color: var(--gold-premium); width: 50%; margin: 1rem auto;">
+                    <p class="card-text text-secondary">{{ producto.descripcion }}</p>
+                    <h3 class="text-gold mb-4">${{ producto.precio }}</h3>
+                    <form action="{% url 'agregar_al_carrito' producto.id %}" method="POST" class="mt-auto">
+                    {% csrf_token %}
+                    <button type="submit" class="btn bg-gold w-100 fw-bold rounded-pill text-dark">Añadir a la copa</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

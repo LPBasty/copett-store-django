@@ -1,0 +1,16 @@
+# Entornos virtuales
+venv/
+env/
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+
+# Archivos multimedia (Fotos de las botellas)
+media/
+
+# Archivos de la base de datos local por defecto
+db.sqlite3
+
+# Archivos de configuración de tu editor
+.vscode/

@@ -1,0 +1,103 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5" style="min-height: 75vh;">
+    <h2 class="fw-bold text-gold mb-4 border-bottom border-warning pb-2">Tu Copa VIP 🛒</h2>
+
+    {% if carrito and carrito.items.all %}
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card card-pro rounded-4 border-gold bg-dark">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-gold">Producto</th>
+                                    <th scope="col" class="text-gold text-center">Precio</th>
+                                    <th scope="col" class="text-gold text-center">Cantidad</th>
+                                    <th scope="col" class="text-gold text-center">Subtotal</th>
+                                    <th scope="col" class="text-gold text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in carrito.items.all %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if item.producto.imagen %}
+                                                <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: contain; background-color: #1a1a1a;">
+                                            {% else %}
+                                                <div class="display-6 me-3">{{ item.producto.icono }}</div>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-0 fw-bold text-light">{{ item.producto.nombre }}</h6>
+                                                <small class="text-secondary">{% if item.producto.es_vip %}Cava VIP{% else %}Colección Clásica{% endif %}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center text-light">${{ item.producto.precio }}</td>
+                                    <td class="text-center fw-bold text-light">{{ item.cantidad }}</td>
+                                    <td class="text-center fw-bold text-gold">${{ item.subtotal }}</td>
+                                    <td class="text-center">
+                                        <form action="{% url 'eliminar_del_carrito' item.id %}" method="POST" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle" title="Quitar uno">
+                                                ❌
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card card-pro rounded-4 border-gold bg-dark sticky-top" style="top: 20px;">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold text-light mb-4">Resumen</h4>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-secondary">Subtotal:</span>
+                        <span class="text-light fw-bold">${{ carrito.total_carrito }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-secondary">Envío VIP:</span>
+                        <span class="text-success fw-bold">Gratis</span>
+                    </div>
+                    
+                    <hr style="border-color: var(--gold-premium);">
+                    
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="text-light fs-5">Total a Pagar:</span>
+                        <span class="text-gold fs-4 fw-bold">${{ carrito.total_carrito }}</span>
+                    </div>
+
+                    <button class="btn bg-gold w-100 fw-bold rounded-pill py-3 text-dark fs-5 shadow-lg">
+                        Proceder al Pago 🔒
+                    </button>
+                    
+                    <div class="text-center mt-3">
+                        <a href="{% url 'inicio' %}" class="text-secondary text-decoration-none small">Seguir explorando la tienda</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="text-center py-5 my-5">
+        <div class="display-1 mb-4 opacity-50">🍷</div>
+        <h3 class="fw-bold text-light">Tu copa está vacía</h3>
+        <p class="text-secondary mb-4">Descubre nuestra selección de espíritus nobles y comienza tu experiencia.</p>
+        <a href="{% url 'inicio' %}" class="btn bg-gold fw-bold rounded-pill px-5 py-2 text-dark">Ir a la Cava</a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
