@@ -1,4 +1,4 @@
-from .models import Carrito
+from .models import Carrito, Categoria
 
 def total_carrito(request):
     total = 0
@@ -14,3 +14,6 @@ def total_carrito(request):
             
     # Retorna un diccionario que estará disponible en TODOS los HTML de tu sitio
     return {'cantidad_carrito': total}
+
+def categorias_globales(request):
+    return {'categorias_menu': Categoria.objects.all()}

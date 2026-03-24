@@ -85,9 +85,11 @@
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top"
         style="background-color: rgba(0,0,0,0.9); border-bottom: 1px solid #333;">
         <div class="container">
-        <a class="navbar-brand d-flex align-items-center text-gold fw-bold" href="{% url 'inicio' %}">
-        <img src="{% static 'core/img/logo_navbar.png' %}" alt="Logo Copett Store" height="40" class="d-inline-block align-text-top me-2" style="object-fit: contain;">
-        Copett Store</a>            
+            <a class="navbar-brand d-flex align-items-center text-gold fw-bold" href="{% url 'inicio' %}">
+                <img src="{% static 'core/img/logo_navbar.png' %}" alt="Logo Copett Store" height="40" class="d-inline-block align-text-top me-2" style="object-fit: contain;">
+                Copett Store
+            </a>            
+            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -95,47 +97,103 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'inicio' %}">Colección Clásica</a>
+                        <a class="nav-link text-light fw-bold" href="{% url 'inicio' %}">Colección Clásica</a>
                     </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light fw-bold" href="#" id="navbarCategorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Categorías
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark border-gold" aria-labelledby="navbarCategorias">
+                            {% for cat in categorias_menu %}
+                                <li>
+                                    <a class="dropdown-item text-light hover-gold" href="{{ request.path }}?categoria={{ cat.id }}">
+                                        {{ cat.nombre }}
+                                    </a>
+                                </li>
+                            {% empty %}
+                                <li><span class="dropdown-item text-secondary">Sin categorías</span></li>
+                            {% endfor %}
+                            <li><hr class="dropdown-divider border-secondary"></li>
+                            <li><a class="dropdown-item fw-bold text-gold" href="{% url 'inicio' %}">Ver todo el catálogo</a></li>
+                        </ul>
+                    </li>
+                    
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link text-gold fw-bold ms-3" href="{% url 'tienda_vip' %}">💎 Cava VIP</a>
+                        <a class="nav-link text-gold fw-bold" href="{% url 'tienda_vip' %}">Cava VIP 💎</a>
                     </li>
-                    <li class="nav-item me-3 d-flex align-items-center">
-    <a href="{% url 'ver_carrito' %}" class="nav-link text-light d-flex align-items-center" style="text-decoration: none; transition: color 0.3s;">
-        
-        <div class="position-relative me-2 fs-5">
-            🛒
-            {% if cantidad_carrito > 0 %}
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-dark" style="font-size: 0.65rem;">
-                    {{ cantidad_carrito }}
-                    <span class="visually-hidden">productos</span>
-                </span>
-            {% endif %}
-        </div>
-        
-        <span class="fw-bold">Carrito</span>
-        
-    </a>
-</li>
+                    <li class="nav-item d-flex align-items-center">
+                        <a href="{% url 'ver_carrito' %}" class="nav-link text-light" style="text-decoration: none; transition: color 0.3s;">
+                            <span class="position-relative fw-bold">
+                                Carrito 🛒
+                                {% if cantidad_carrito > 0 %}
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-dark" style="font-size: 0.65rem;">
+                                        {{ cantidad_carrito }}
+                                        <span class="visually-hidden">productos</span>
+                                    </span>
+                                {% endif %}
+                            </span>
+                        </a>
+                    </li>
                     {% endif %}
                 </ul>
 
+                <form action="{% url 'inicio' %}" method="GET" class="d-flex mx-auto me-lg-4 my-2 my-lg-0" style="max-width: 300px; width: 100%;">
+                    <input class="form-control bg-dark text-light border-secondary border-end-0 rounded-start-pill" type="search" name="buscar" placeholder="Buscar licores..." aria-label="Search" value="{{ request.GET.buscar }}">
+                    <button class="btn bg-dark border-secondary border-start-0 rounded-end-pill hover-gold text-gold" type="submit" title="Buscar">
+                        🔍
+                    </button>
+                </form>
+
                 <div class="d-flex align-items-center">
                     {% if user.is_authenticated %}
-                    <span class="text-light me-3">Bienvenido, <span class="text-gold">{{ user.username }}</span></span>
-                    <form action="{% url 'logout' %}" method="post">
-                        {% csrf_token %}
-                        <button class="btn btn-outline-danger btn-sm" type="submit">Salir</button>
-                    </form>
+                        <div class="nav-item dropdown me-2">
+                            <a class="nav-link dropdown-toggle text-light d-flex align-items-center" href="#" id="navbarPerfil" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="me-2 d-none d-lg-block">Hola, <span class="text-gold fw-bold">{{ user.username }}</span></span>
+                                <div class="bg-gold text-dark rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 35px; height: 35px; font-size: 1.2rem;">
+                                    {{ user.username|make_list|first|upper }}
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end border-gold mt-2" aria-labelledby="navbarPerfil">
+                                <li><a class="dropdown-item text-light hover-gold py-2" href="{% url 'mis_pedidos' %}">📦 Mis Pedidos</a></li>
+                                <li><a class="dropdown-item text-light hover-gold py-2" href="{% url 'mis_datos' %}">👤 Mis Datos</a></li>
+                                <li><hr class="dropdown-divider border-secondary"></li>
+                                <li>
+                                    <form action="{% url 'logout' %}" method="post" class="px-3 py-1">
+                                        {% csrf_token %}
+                                        <button class="btn btn-outline-danger btn-sm w-100 fw-bold rounded-pill" type="submit">Cerrar Sesión</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm me-2">Ingresar</a>
-                    <a href="{% url 'registro' %}" class="btn bg-gold btn-sm fw-bold">¡Hazte VIP!</a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm me-2 rounded-pill px-3">Ingresar</a>
+                        <a href="{% url 'registro' %}" class="btn bg-gold btn-sm fw-bold rounded-pill px-3 text-dark">¡Hazte VIP!</a>
                     {% endif %}
                 </div>
             </div>
         </div>
     </nav>
+    </nav>
+
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show shadow-sm border" role="alert" style="border-radius: 10px;">
+                    
+                    {% if message.tags == 'success' %} ✅
+                    {% elif message.tags == 'error' %} ❌
+                    {% elif message.tags == 'warning' %} ⚠️
+                    {% else %} ℹ️ {% endif %}
+                    
+                    <strong>{{ message }}</strong>
+                    
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 
     {% block content %}
     {% endblock %}
@@ -145,6 +203,19 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let alertas = document.querySelectorAll('.alert');
+            
+            alertas.forEach(function (alerta) {
+                setTimeout(function () {
+                    let alertaBootstrap = new bootstrap.Alert(alerta);
+                    alertaBootstrap.close();
+                }, 6000);
+            });
+        });
+    </script>
 </body>
 
 </html>

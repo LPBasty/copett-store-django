@@ -8,8 +8,9 @@ class Producto(models.Model):
     icono = models.CharField(max_length=10, help_text="Emoji temporal", blank=True, null=True)
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True, help_text="Foto real de la botella")
     es_vip = models.BooleanField(default=False)
-
+    categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE, related_name='productos', null=True, blank=True)
     orden = models.IntegerField(default=0, help_text="0 es el primero. Usa números mayores para enviarlo al final.")
+    stock = models.IntegerField(default=0, help_text="Unidades disponibles en bodega")
 
     class Meta:
         # Ordena primero por el campo 'orden' de menor a mayor.
@@ -60,3 +61,73 @@ class ItemCarrito(models.Model):
     @property
     def subtotal(self):
         return self.producto.precio * self.cantidad
+
+
+class Categoria(models.Model):
+    nombre = models.CharField(max_length=100, unique=True)
+    descripcion = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.nombre
+
+class Proveedor(models.Model):
+    empresa = models.CharField(max_length=150)
+    telefono = models.CharField(max_length=20)
+    email = models.EmailField()
+
+    def __str__(self):
+        return self.empresa
+    
+# ==========================================
+# MODELOS DE ÓRDENES (HISTORIAL DE COMPRAS)
+# ==========================================
+
+class Pedido(models.Model):
+    ESTADOS = (
+        ('PENDIENTE', 'Pendiente de Pago'),
+        ('PAGADO', 'Pagado - Preparando'),
+        ('ENVIADO', 'Enviado al cliente'),
+        ('ENTREGADO', 'Entregado'),
+    )
+    
+    # Relación: Un usuario puede tener muchos pedidos
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pedidos')
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=20, choices=ESTADOS, default='PENDIENTE')
+    
+    # Total exacto pagado en ese momento
+    total_pagado = models.IntegerField(default=0)
+    
+    # Datos de envío
+    direccion_envio = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Pedido"
+        verbose_name_plural = "Pedidos"
+        ordering = ['-fecha_creacion'] # Los más recientes primero
+
+    def __str__(self):
+        return f"Pedido #{self.id} | {self.usuario.username} | {self.get_estado_display()}"
+
+
+class ItemPedido(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='items')
+    
+    # TRUCO PRO: 
+    # on_delete=models.SET_NULL. Esto hace que si se borra un item de la base de datos, el historial de compras del cliente 
+    # no explotará, simplemente dirá "Producto eliminado".
+    producto = models.ForeignKey(Producto, on_delete=models.SET_NULL, null=True)
+    
+    # El nombre y precio congelados en el tiempo
+    nombre_historico = models.CharField(max_length=100)
+    precio_historico = models.IntegerField()
+    cantidad = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.cantidad}x {self.nombre_historico} (Pedido #{self.pedido.id})"
+
+    @property
+    def subtotal(self):
+        return self.precio_historico * self.cantidad
+    
+

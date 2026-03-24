@@ -1,0 +1,56 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5" style="min-height: 75vh;">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card card-pro border-gold bg-dark rounded-4 shadow-lg">
+                <div class="card-body p-5">
+                    
+                    <div class="text-center mb-4">
+                        <div class="bg-gold text-dark rounded-circle d-inline-flex align-items-center justify-content-center fw-bold mb-3 shadow" style="width: 80px; height: 80px; font-size: 2.5rem;">
+                            {{ user.username|make_list|first|upper }}
+                        </div>
+                        <h2 class="fw-bold text-light">Mis Datos Personales</h2>
+                        <p class="text-secondary">Actualiza tu información para tus envíos de la Cava VIP.</p>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label class="form-label text-gold fw-bold">Nombre de Usuario (ID de Cliente)</label>
+                            <input type="text" class="form-control bg-dark text-secondary border-secondary" value="{{ user.username }}" disabled readonly>
+                            <div class="form-text text-secondary"><small>Por motivos de seguridad del sistema, el nombre de usuario no es modificable.</small></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-light">Nombre</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-light">Apellidos</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-light">Correo Electrónico</label>
+                            {{ form.email }}
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn bg-gold text-dark fw-bold rounded-pill py-2 fs-5">
+                                💾 Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

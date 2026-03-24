@@ -11,7 +11,7 @@
 </div>
 
 <div class="container py-5">
-    <h2 class="text-center text-gold mb-5 fw-bold">💎 Cava de Alta Gama</h2>
+    <h2 class="text-center text-gold mb-5 fw-bold">💎 Cava de Alta Gama 💎</h2>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for producto in productos_vip %}
         <div class="col">
@@ -31,10 +31,21 @@
                     <hr style="border-color: var(--gold-premium); width: 50%; margin: 1rem auto;">
                     <p class="card-text text-secondary">{{ producto.descripcion }}</p>
                     <h2 class="text-light mb-4">${{ producto.precio }}</h2>
-                    <form action="{% url 'agregar_al_carrito' producto.id %}" method="POST" class="mt-auto">
-                    {% csrf_token %}
-                    <button type="submit" class="btn bg-gold w-100 fw-bold rounded-pill text-dark">Añadir a la copa</button>
-                    </form></div>
+                    <div class="mt-auto d-flex flex-column align-items-center w-100">
+                        {% if producto.stock > 0 %}
+                            <form action="{% url 'agregar_al_carrito' producto.id %}" method="POST" class="w-100 mb-1">
+                                {% csrf_token %}
+                                <button type="submit" class="btn bg-gold w-100 fw-bold rounded-pill text-dark">Añadir a la copa 🛒</button>
+                            </form>
+                            <small class="text-success fw-bold" style="font-size: 0.8rem;">Stock: {{ producto.stock }} disponibles</small>
+                        
+                        {% else %}
+                            <button onclick="alert('¡Anotado! Te enviaremos un correo electrónico apenas {{ producto.nombre }} vuelva a nuestras bodegas.')" class="btn btn-outline-secondary fw-bold rounded-pill w-100 mb-1" style="cursor: pointer;">
+                                Te avisamos cuando llegue 🔔
+                            </button>
+                            <small class="text-danger fw-bold" style="font-size: 0.8rem;">Agotado Temporalmente</small>
+                        {% endif %}
+                    </div></div>
             </div>
         </div>
         {% endfor %}

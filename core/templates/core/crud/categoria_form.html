@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container py-5 d-flex justify-content-center" style="min-height: 70vh;">
+    <div class="card bg-dark border-gold rounded-4 p-4 shadow-lg" style="max-width: 500px; width: 100%;">
+        <h3 class="text-gold fw-bold text-center mb-4">
+            {% if object %}Editar{% else %}Nueva{% endif %} Categoría
+        </h3>
+        
+        <style>
+            .crud-form label { color: var(--gold-premium); font-weight: bold; margin-top: 10px;}
+            .crud-form input, .crud-form textarea { width: 100%; padding: 8px; border-radius: 5px; background: #222; border: 1px solid #555; color: white;}
+        </style>
+
+        <form method="POST" class="crud-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="mt-4 d-flex justify-content-between">
+                <a href="{% url 'categoria_list' %}" class="btn btn-outline-secondary rounded-pill fw-bold">Cancelar</a>
+                <button type="submit" class="btn bg-gold text-dark rounded-pill fw-bold">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container py-5" style="min-height: 70vh;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-gold fw-bold">Gestión de Proveedores</h2>
+        <a href="{% url 'proveedor_crear' %}" class="btn bg-gold fw-bold text-dark rounded-pill">➕ Nuevo Proveedor</a>
+    </div>
+
+    <div class="card bg-dark border-gold rounded-4">
+        <div class="card-body">
+            <table class="table table-dark table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="text-gold">ID</th>
+                        <th class="text-gold">Empresa</th>
+                        <th class="text-gold">Teléfono</th>
+                        <th class="text-gold">Email</th>
+                        <th class="text-gold text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prov in proveedores %}
+                    <tr>
+                        <td>{{ prov.id }}</td>
+                        <td class="fw-bold">{{ prov.empresa }}</td>
+                        
+                        <td>{{ prov.telefono }}</td>
+                        
+                        <td>{{ prov.email }}</td>
+                        
+                        <td class="text-center">
+                            <a href="{% url 'proveedor_editar' prov.id %}" class="btn btn-sm btn-outline-warning rounded-circle" title="Editar">✏️</a>
+                            <a href="{% url 'proveedor_eliminar' prov.id %}" class="btn btn-sm btn-outline-danger rounded-circle" title="Eliminar">🗑️</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-secondary py-4">No hay proveedores registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

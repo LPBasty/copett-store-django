@@ -78,13 +78,15 @@
                         <span class="text-gold fs-4 fw-bold">${{ carrito.total_carrito }}</span>
                     </div>
 
-                    <button class="btn bg-gold w-100 fw-bold rounded-pill py-3 text-dark fs-5 shadow-lg">
-                        Proceder al Pago 🔒
-                    </button>
-                    
-                    <div class="text-center mt-3">
-                        <a href="{% url 'inicio' %}" class="text-secondary text-decoration-none small">Seguir explorando la tienda</a>
-                    </div>
+                    <form action="{% url 'procesar_compra' %}" method="POST" class="d-grid gap-2">
+                        {% csrf_token %}
+                        <button type="submit" class="btn bg-gold text-dark fw-bold rounded-pill btn-lg">
+                            Pagar🔒
+                        </button>
+                        </form>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'inicio' %}" class="text-secondary text-decoration-none small">Seguir explorando la tienda</a>
+                        </div>
                 </div>
             </div>
         </div>
