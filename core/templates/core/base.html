@@ -81,7 +81,29 @@
 </head>
 
 <body class="text-light">
+    <body class="text-light">
 
+    <div class="modal fade" id="modalEdad" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalEdadLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-gold text-center p-4" style="border-radius: 15px;">
+                <div class="modal-body">
+                    <div class="display-1 mb-3">🔞</div>
+                    <h2 class="text-gold fw-bold mb-3" id="modalEdadLabel">Verificación de Edad</h2>
+                    <p class="text-light mb-4 fs-5">Para entrar a Copett Store debes tener la edad legal para consumir alcohol.</p>
+                    <h4 class="text-light fw-bold mb-4">¿Eres mayor de 18 años?</h4>
+                    
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-5 fw-bold" id="btnSoyMenor">
+                            NO, soy menor
+                        </button>
+                        <button type="button" class="btn bg-gold text-dark rounded-pill px-5 fw-bold" id="btnSoyMayor">
+                            SÍ, soy mayor
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top"
         style="background-color: rgba(0,0,0,0.9); border-bottom: 1px solid #333;">
         <div class="container">
@@ -214,6 +236,30 @@
                     alertaBootstrap.close();
                 }, 6000);
             });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Verificamos si ya existe el registro en el navegador
+            let esMayor = localStorage.getItem('copett_mayor_edad');
+            
+            // Si no existe, mostramos el modal obligatoriamente
+            if (!esMayor) {
+                let modalEdad = new bootstrap.Modal(document.getElementById('modalEdad'));
+                modalEdad.show();
+
+                // Lógica del botón SI
+                document.getElementById('btnSoyMayor').addEventListener('click', function() {
+                    localStorage.setItem('copett_mayor_edad', 'true'); // Guardamos la respuesta
+                    modalEdad.hide(); // Ocultamos la ventana
+                });
+
+                // Lógica del botón NO
+                document.getElementById('btnSoyMenor').addEventListener('click', function() {
+                    // Lo redirigimos a una página segura (ej: Google)
+                    window.location.href = "https://www.google.com";
+                });
+            }
         });
     </script>
 </body>

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
@@ -140,50 +140,6 @@ def eliminar_del_carrito(request, item_id):
         messages.error(request, f'{item.producto.nombre} fue eliminado de tu copa.')
         
     return redirect('ver_carrito')
-
-
-"""EJERCICIO PRÁCTICO DE ORM - VISTA DE PRUEBA
-
-def ejercicio_orm(request):
-
-    html_response = "<h1>Resultados del Ejercicio ORM</h1>"
-
-    # 1. CREAR (Create)
-    nuevo_producto = Producto.objects.create(
-    nombre="Ron Mítico de Prueba",
-    precio=45000,
-    descripcion="Botella creada desde la vista de práctica.",
-    es_vip=True,
-    orden=10
-    )
-    html_response += f"<p><b>Creado:</b> {nuevo_producto.nombre} (ID: {nuevo_producto.id})</p>"
-
-    # 2. SELECCIONAR (Select All)
-    todos = Producto.objects.all()
-    html_response += f"<p> <b>Seleccionados:</b> Hay {todos.count()} productos en total en la tienda.</p>"
-
-    # 3. FILTRAR (Filter)
-    caros = Producto.objects.filter(precio__gt=20000) # Trae solo los productos cuyo precio es mayor a $20.000
-    html_response += f"<p> <b>Filtrados:</b> Encontré {caros.count()} productos que cuestan más de $20.000.</p>"
-
-    # 4. EXCLUIR (Exclude)
-    clasicos = Producto.objects.exclude(es_vip=True) # Trae solo los productos que NO son VIP (es decir, los básicos)
-    html_response += f"<p><b>Excluidos:</b> Tenemos {clasicos.count()} productos que NO son VIP.</p>"
-
-    # 5. ORDENAR (Order By)
-    mas_caros_primero = Producto.objects.all().order_by('-precio')
-    html_response += f"<p> <b>Ordenados:</b> El producto más caro de la tienda es '{mas_caros_primero.first().nombre}' a ${mas_caros_primero.first().precio}.</p>"
-
-    # 6. ACTUALIZAR (Update)
-    Producto.objects.filter(id=nuevo_producto.id).update(precio=50000) # Actualiza el precio del producto que creamos al principio a $50.000. Usamos filter para no correr el riesgo de actualizar varios productos a la vez.
-    html_response += f"<p> <b>Actualizado:</b> El precio del producto ID {nuevo_producto.id} subió a $50.000.</p>"
-
-    # 7. ELIMINAR (Delete)
-    producto_a_borrar = Producto.objects.get(id=nuevo_producto.id)
-    producto_a_borrar.delete() # Elimina el producto que creamos al principio. Usamos get porque es un solo producto específico.
-    html_response += f"<p> <b>Eliminado:</b> El producto ID {nuevo_producto.id} fue destruido correctamente.</p>"
-
-    return HttpResponse(html_response)"""
 
 # CRUD DE LA TABLA: CATEGORIA
 
@@ -350,3 +306,31 @@ class MisDatosView(LoginRequiredMixin, UpdateView):
         # Agregamos un mensaje verde flotante cuando se guarde con éxito
         messages.success(self.request, "¡Tus datos han sido actualizados con éxito!")
         return super().form_valid(form)
+
+# DETALLE DE PRODUCTO Y CROSS-SELLING
+# ==========================================
+class ProductoDetalleView(DetailView):
+    model = Producto
+    template_name = 'core/producto_detalle.html'
+    context_object_name = 'producto'
+
+    def get_context_data(self, **kwargs):
+        # 1. Recuperamos el contexto normal (el producto principal)
+        context = super().get_context_data(**kwargs)
+        producto_actual = self.object
+        
+        # 2. EL ALGORITMO DE CROSS-SELLING
+        if producto_actual.categoria:
+            # Buscamos botellas de la misma categoría, que tengan el mismo nivel de acceso (VIP o Básico),
+            # y EXCLUIMOS la botella que el cliente ya está mirando.
+            relacionados = Producto.objects.filter(
+                categoria=producto_actual.categoria,
+                es_vip=producto_actual.es_vip
+            ).exclude(id=producto_actual.id).order_by('?')[:3] 
+            #order_by('?') selecciona 3 botellas al azar para que la vitrina siempre cambie
+        else:
+            relacionados = Producto.objects.none()
+            
+        # 3. Mandamos las recomendaciones al HTML
+        context['productos_relacionados'] = relacionados
+        return context

@@ -18,16 +18,17 @@
             <div class="card h-100 card-pro border-gold rounded-4"
                 style="background: linear-gradient(145deg, #1a1a1a, #0a0a0a);">
                 <div class="card-body text-center p-4">
-                    {% if producto.imagen %}
-                    <div class="mb-3"
-                        style="height: 250px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
-                            style="max-height: 100%; object-fit: contain;">
-                    </div>
-                    {% else %}
-                    <div class="display-1 mb-3">{{ producto.icono }}</div>
-                    {% endif %}
-                    <h5 class="card-title fw-bold text-gold">{{ producto.nombre }}</h5>
+                    <a href="{% url 'producto_detalle' producto.id %}" class="text-decoration-none text-light hover-gold">
+                        {% if producto.imagen %}
+                            <div class="mb-3" style="height: 250px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" style="max-height: 100%; object-fit: contain;">
+                            </div>
+                        {% else %}
+                            <div class="display-1 mb-3">{{ producto.icono }}</div>
+                        {% endif %}
+                        
+                        <h5 class="card-title fw-bold">{{ producto.nombre }}</h5>
+                    </a>
                     <hr style="border-color: var(--gold-premium); width: 50%; margin: 1rem auto;">
                     <p class="card-text text-secondary">{{ producto.descripcion }}</p>
                     <h2 class="text-light mb-4">${{ producto.precio }}</h2>

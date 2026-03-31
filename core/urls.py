@@ -11,8 +11,8 @@ urlpatterns = [
     path('procesar-compra/', views.procesar_compra, name='procesar_compra'),
     path('perfil/mis-pedidos/', views.MisPedidosView.as_view(), name='mis_pedidos'),
     path('perfil/mis-datos/', views.MisDatosView.as_view(), name='mis_datos'),
-    #path('orm-practica/', views.ejercicio_orm, name='ejercicio_orm'),    # RUTA PARA EL EJERCICIO PRÁCTICO 03-03-26
-
+    path('producto/<int:pk>/', views.ProductoDetalleView.as_view(), name='producto_detalle'),
+    
     # RUTAS CRUD CATEGORIA (/categoria/operacion/)
     path('categoria/leer/', views.CategoriaListView.as_view(), name='categoria_list'),
     path('categoria/crear/', views.CategoriaCreateView.as_view(), name='categoria_crear'),
